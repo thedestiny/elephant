@@ -1,0 +1,91 @@
+version : '2'
+services:
+
+  nginxserver:
+    container_name: nginxserver
+    image: nginx:latest
+    privileged: true
+    networks:
+      - net-spring-db
+    restart: always
+    environment:
+      - "TZ=Asia/Shanghai"
+    ports:
+      - 80:80
+      - 433:443
+    volumes:
+      - ./workspace/nginx/:/root
+      - ./src/main/resources/static:/app/static
+      - ./conf/elephant.conf:/etc/nginx/conf.d/elephant.conf
+    depends_on:
+      - appserver
+    links:
+          - "appserver:appserver"
+
+  redisserver:
+    container_name: redisserver
+    image: redis:latest
+    privileged: true
+    networks:
+      - net-spring-db
+    restart: always
+    environment:
+      - "TZ=Asia/Shanghai"
+    command: redis-server /etc/redis.conf
+    ports:
+      - 6579:6579
+    volumes:
+      - ./workspace/redis:/data
+      - ./conf/redis.conf:/etc/redis.conf
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+
+  dbserver:
+    container_name: dbserver
+    image: mysql/mysql-server:5.7
+    privileged: true
+    networks:
+      - net-spring-db
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_ROOT_PASSWORD=Myroot123!"
+      - "MYSQL_ROOT_HOST=%"
+      - "TZ=Asia/Shanghai"
+    ports:
+      - "5306:5306"
+    volumes:
+       - ./workspace/mysql:/var/lib/mysql
+       - ./conf/my.cnf:/etc/my.cnf
+       - ./sql:/docker-entrypoint-initdb.d/
+       - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+    command: [
+          'mysqld',
+          '--innodb-buffer-pool-size=20M',
+          '--character-set-server=utf8',
+          '--collation-server=utf8_general_ci',
+          '--default-time-zone=+8:00',
+          '--lower-case-table-names=0'
+        ]
+
+  appserver:
+    container_name: elephant
+    image: destiny.com/elephant:v0.1
+    privileged: true
+    networks:
+      - net-spring-db
+    ports:
+      - "8087:8080"
+    volumes:
+      - ./workspace/app:/root/app
+    depends_on:
+      - dbserver
+      - redisserver
+    environment:
+      - "TZ=Asia/Shanghai"
+    links:
+      - "dbserver:dbserver"
+      - "redisserver:redisserver"
+    command: /bin/sh /root/app/start_elephant.sh
+
+networks:
+  net-spring-db:
+    driver: bridge

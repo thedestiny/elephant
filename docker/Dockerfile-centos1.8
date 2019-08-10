@@ -1,0 +1,10 @@
+FROM centos
+
+MAINTAINER destiny <xieyue86@163.com>
+LABEL "rating"="Five Starts" "Class"="First Class"
+
+RUN yum update -y && yum clean all -y &&  yum install -y zip unzip wget net-tools initscripts
+ENV LANG en_US.utf8
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+ADD ./jdk-8u191-linux-x64.rpm /root/jdk-8u191-linux-x64.rpm
+RUN cd /root && yum install -y jdk-8u191-linux-x64.rpm

@@ -1,0 +1,42 @@
+### 测试环境配置
+server:
+  #端口
+  port: 8080
+
+database:
+  host: dbserver
+
+spring:
+  ## profiles: test
+  #redis配置
+  redis:
+      database: 6
+      host: redisserver
+      port: 6579
+      password: tianhe      # 密码（默认为空）
+      timeout: 6000  # 连接超时时长（毫秒）
+      pool:
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10      # 连接池中的最大空闲连接
+        min-idle: 5       # 连接池中的最小空闲连接
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://${database.host}:5306/elephant?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true
+    username: root
+    password: Myroot123!
+
+#日志
+logging:
+  config: classpath:log/logback.xml
+  path: elephant
+
+#自定义配置属性
+#源码生成文件夹
+#本地路径
+source-code-dic: home/elephant/mysite
+source-code-zipfile: home/elephant/源码.rar
+
+#搜索文件生成包的位置
+#本地路径
+lucence-dic: home/elephant/lucence

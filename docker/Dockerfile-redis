@@ -1,0 +1,2 @@
+FROM redis:latest
+## ADD　./../workspace/redis/redis.conf /etc/redis/redis.conf

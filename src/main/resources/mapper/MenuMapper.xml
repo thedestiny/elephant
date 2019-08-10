@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.destiny.elephant.mapper.MenuMapper">
+    <!-- 这儿定义一个resultMap -->
+
+    <resultMap type="com.destiny.elephant.entity.Menu" id="getSelf">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="level" column="level"/>
+        <result property="parentIds" column="parent_ids"/>
+        <result property="sort" column="sort"/>
+        <result property="href" column="href"/>
+        <result property="target" column="target"/>
+        <result property="icon" column="icon"/>
+        <result property="isShow" column="is_show"/>
+        <result property="bgColor" column="bg_color"/>
+        <result property="permission" column="permission"/>
+        <result property="createId" column="create_id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="remarks" column="remarks"/>
+        <result property="delFlag" column="del_flag"/>
+        <collection property="children" select="getMenus" column="{parentId = id,isShow = myIsShow}"/>
+    </resultMap>
+
+    <select id="getMenus" resultMap="getSelf" parameterType="java.util.Map">
+        SELECT
+        id,
+        `name`,
+        parent_id ,
+        parent_ids ,
+        `level`,
+        sort,
+        href,
+        target,
+        icon,
+        is_show ,
+        bg_color ,
+        permission,
+        create_by ,
+        create_date ,
+        update_by ,
+        update_date ,
+        remarks,
+        del_flag ,
+        #{isShow} as "myIsShow"
+        from sys_menu
+        where
+        del_flag = false
+        <choose>
+        <when test="parentId != null ">
+            and parent_id = #{parentId}
+        </when>
+        <otherwise>
+            and parent_id = 0
+        </otherwise>
+    </choose>
+        <if test="isShow == true">
+            and is_show = #{isShow}
+        </if>
+        order by sort desc
+    </select>
+
+
+    <select id="showAllMenusList" resultType="com.destiny.elephant.entity.Menu" parameterType="java.util.Map">
+        SELECT
+        m.id,
+        m.name,
+        m.parent_id AS "parentId",
+        m.parent_ids AS "parentIds",
+        m.sort,
+        m.href,
+        m.target,
+        m.level,
+        m.icon,
+        m.is_show AS "isShow",
+        bg_color AS "bgColor",
+        m.permission,
+        m.create_date AS "createDate",
+        m.update_date AS "updateDate",
+        p.id AS "parentTree.id",
+        p.name AS "parentTree.name",
+        p.icon AS "parentTree.icon"
+        from
+        (select * from sys_menu where del_flag = false) m
+        left join sys_menu p on p.id = m.parent_id
+        <where>
+            <if test="id != 0 ">
+                and m.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and m.name like CONCAT('%', '${name}', '%')
+            </if>
+            <if test="parentId != null ">
+                and m.parent_id = #{parentId}
+            </if>
+            <if test="permission != null and permission != ''">
+                and m.permission = #{permission}
+            </if>
+        </where>
+
+    </select>
+
+    <resultMap id="showMenuMap" type="com.destiny.elephant.entity.VO.ShowMenu">
+        <result property="id" column="id"/>
+        <result property="pid" column="pid"/>
+        <result property="title" column="title"/>
+        <result property="icon" column="icon"/>
+        <result property="href" column="href"/>
+        <collection property="children" select="selectShowMenuByUser" column="{parentId = id,userId = myuserId}">
+        </collection>
+    </resultMap>
+
+    <select id="selectMaxSort" parameterType="com.destiny.elephant.entity.Menu" resultType="integer">
+
+        select max(`sort`)
+        from sys_menu
+        <where>
+            <if test="parentId != null">
+                `parent_id` = #{parentId}
+            </if>
+        </where>
+
+
+    </select>
+
+
+    <select id="selectShowMenuByUser" resultMap="showMenuMap" parameterType="java.util.Map">
+        SELECT
+        distinct m.id as "id",
+        m.parent_id as "pid",
+        m.name as "title",
+        m.icon as "icon",
+        m.href as "href",
+        m.sort,
+        #{userId} as "myuserId"
+        FROM
+        (select id, parent_id, `name`,icon,href,sort, is_show from sys_menu where del_flag = FALSE ) m
+        LEFT JOIN sys_role_menu srm on srm.menu_id = m.id
+        LEFT JOIN sys_role r on r.id = srm.role_id
+        LEFT JOIN sys_user_role sur on sur.role_id = r.id
+        LEFT JOIN sys_user u on u.id = sur.user_id
+        WHERE
+        u.id = #{userId}
+        <choose>
+            <when test="parentId != null ">
+                and m.parent_id = #{parentId}
+            </when>
+            <otherwise>
+                and m.parent_id = 0
+            </otherwise>
+        </choose>
+        and m.is_show = true
+        order by m.sort desc
+    </select>
+
+    <!--<insert id="saveRoleMenus">-->
+    <!--insert into sys_role_menu(role_id,menu_id)-->
+    <!--values-->
+    <!--<foreach collection="menus" item="m" index="index" separator="," >-->
+    <!--(#{roleId},#{m.id})-->
+    <!--</foreach>-->
+    <!--</insert>-->
+
+    <!--<delete id="dropRoleMenus" parameterType="java.lang.Long">-->
+    <!--delete from sys_role_menu where role_id = #{roleId}-->
+    <!--</delete>-->
+
+    <!--<delete id="dropRoleUsers" parameterType="java.lang.Long">-->
+    <!--delete from sys_user_role where role_id = #{roleId}-->
+    <!--</delete>-->
+</mapper>
