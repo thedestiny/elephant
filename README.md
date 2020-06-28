@@ -48,12 +48,16 @@ sh script/start.sh
 #### 3、启动项目
 
 在项目路径下执行 cd elephant
-启动项目
-docker-compose up 
--d 后台启动项目
+启动项目 -d 后台启动项目
+docker-compose up -d 
 停止容器
 docker-compose down 
-
+项目访问,需要在本地 host 配置服务器的域名。修改`C:\Windows\System32\drivers\etc\host`文件, 添加以下内容:
+```
+项目服务器IP地址 elephant.destiny.com
+```
+浏览器访问`elephant.destiny.com`
+登录账号/密码为:test/1
 
 ##### 删除docker容器
 docker rm nginxserver elephant dbserver redisserver
