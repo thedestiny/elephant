@@ -27,8 +27,8 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-codec.version>1.15</commons-codec.version>
         <fileupload.version>1.4</fileupload.version>
-        <mybatisplus-spring-boot-starter.version>3.4.0</mybatisplus-spring-boot-starter.version>
-        <mybatisplus.version>3.4.0</mybatisplus.version>
+        <mybatisplus-spring-boot-starter.version>3.1.2</mybatisplus-spring-boot-starter.version>
+        <mybatisplus.version>3.1.2</mybatisplus.version>
         <fastjson.version>1.2.73</fastjson.version>
         <jackson.version>2.11.2</jackson.version>
         <druid.version>1.1.23</druid.version>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.4.0</version>
+            <version>${mybatisplus.version}</version>
         </dependency>
 
 
