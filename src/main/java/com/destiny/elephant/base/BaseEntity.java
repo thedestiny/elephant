@@ -1,6 +1,3 @@
-/**
- * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
- */
 package com.destiny.elephant.base;
 
 
@@ -15,9 +12,10 @@ import java.io.Serializable;
  * Entity支持类
  */
 
-public abstract class BaseEntity<T extends Model> extends Model<T> {
+public abstract class BaseEntity<T extends Model<?>> extends Model<T>{
 
     private static final long serialVersionUID = -758745977915444613L;
+    
     /**
      * 实体编号（唯一标识）
      */

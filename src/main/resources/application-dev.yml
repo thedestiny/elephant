@@ -1,3 +1,8 @@
+
+# 数据库链接参数配置
+db-params-url: useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+
+
 ###  开发环境配置
 server:
   #端口
@@ -18,7 +23,7 @@ spring:
         min-idle: 5       # 连接池中的最小空闲连接
   # 数据源配置
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/elephant?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true
+    url: jdbc:mysql://127.0.0.1:3306/elephant?${db-params-url}  # useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
     username: root
     password: root
 

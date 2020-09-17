@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @version 2014-05-16
  */
-public abstract class TreeEntity<T extends Model> extends DataEntity<T> {
+public abstract class TreeEntity<T extends Model<?>> extends DataEntity<T> {
 
 
     private static final long serialVersionUID = 6311181874987643364L;

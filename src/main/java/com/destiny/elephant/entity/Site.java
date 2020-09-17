@@ -3,17 +3,14 @@ package com.destiny.elephant.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.destiny.elephant.base.DataEntity;
+import lombok.Data;
 
 import java.io.Serializable;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author wangl
- * @since 2017-12-30
+ 
  */
+@Data
 @TableName("sys_site")
 public class Site extends DataEntity<Site> {
 

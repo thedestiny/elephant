@@ -7,12 +7,7 @@ import com.destiny.elephant.base.TreeEntity;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author wangl
- * @since 2017-10-31
+ * 菜单实体
  */
 @TableName("sys_menu")
 public class Menu extends TreeEntity<Menu> {
@@ -25,17 +20,17 @@ public class Menu extends TreeEntity<Menu> {
 	/**
      * 链接地址
      */
-	@TableField(strategy= FieldStrategy.IGNORED)
+	@TableField(updateStrategy= FieldStrategy.IGNORED)
 	private String href;
     /**
      * 打开方式
      */
-	@TableField(strategy= FieldStrategy.IGNORED)
+	@TableField(updateStrategy= FieldStrategy.IGNORED)
 	private String target;
     /**
      * 是否显示
      */
-	@TableField(value="is_show",strategy= FieldStrategy.IGNORED)
+	@TableField(value="is_show",updateStrategy= FieldStrategy.IGNORED)
 	private Boolean isShow;
 
 	@TableField("bg_color")
@@ -43,7 +38,7 @@ public class Menu extends TreeEntity<Menu> {
     /**
      * 权限标识
      */
-	@TableField(strategy= FieldStrategy.IGNORED)
+	@TableField(updateStrategy= FieldStrategy.IGNORED)
 	private String permission;
 
 	@TableField(exist = false)

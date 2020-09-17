@@ -1,47 +1,26 @@
 package com.destiny.elephant.config;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author chen
  */
+@Slf4j
 @Configuration
 public class MybatisPlusConfig {
-
-    private Logger logger = LoggerFactory.getLogger(MybatisPlusConfig.class);
-
-  /*  @Autowired
-    private MetaObjectHandler metaObjectHandler;*/
-
-
-    /***
-     * plus 的性能优化
-     * @return
-     */
-    @Bean
-    public PerformanceInterceptor performanceInterceptor() {
-        PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
-        /*<!-- SQL 执行性能分析，开发环境使用，线上不推荐。 maxTime 指的是 sql 最大执行时长 -->*/
-        performanceInterceptor.setMaxTime(1000);
-		/*<!--SQL是否格式化 默认false-->*/
-        performanceInterceptor.setFormat(true);
-        return performanceInterceptor;
-    }
-
-    /**
-     * mybatis-plus分页插件
-     */
-    @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor page = new PaginationInterceptor();
-        page.setDialectType("mysql");
-        return page;
-    }
-
-
+	
+	/**
+	 * mybatis-plus分页插件
+	 */
+	@Bean
+	public PaginationInnerInterceptor paginationInterceptor() {
+		PaginationInnerInterceptor page = new PaginationInnerInterceptor(DbType.MYSQL);
+		return page;
+	}
+	
+	
 }

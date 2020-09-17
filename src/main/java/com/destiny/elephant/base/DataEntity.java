@@ -1,6 +1,4 @@
-/**
- * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
- */
+
 package com.destiny.elephant.base;
 
 
@@ -10,15 +8,15 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.destiny.elephant.entity.User;
+import lombok.Data;
 
 import java.util.Date;
 
 /**
  * 数据Entity类
- *
- * @param <T>
  */
-public abstract class DataEntity<T extends Model> extends BaseEntity<T> {
+@Data
+public abstract class DataEntity<T extends Model<?>> extends BaseEntity<T> {
 
     private static final long serialVersionUID = 1575482711707950988L;
     /**
@@ -31,6 +29,7 @@ public abstract class DataEntity<T extends Model> extends BaseEntity<T> {
      * 创建日期
      */
     @TableField(value = "create_date", fill = FieldFill.INSERT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     protected Date createDate;
 
     /**
@@ -43,6 +42,7 @@ public abstract class DataEntity<T extends Model> extends BaseEntity<T> {
      * 更新日期
       */
     @TableField(value = "update_date", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     protected Date updateDate;
 
     /**
@@ -54,7 +54,7 @@ public abstract class DataEntity<T extends Model> extends BaseEntity<T> {
     /**
      * 备注
      */
-    @TableField(strategy= FieldStrategy.IGNORED)
+    @TableField(value = "remarks",updateStrategy= FieldStrategy.IGNORED)
     protected String remarks;
 
     /**
@@ -68,84 +68,12 @@ public abstract class DataEntity<T extends Model> extends BaseEntity<T> {
      */
     @TableField(exist = false)
     protected User updateUser;
-
-
-
-
-    public Long getCreateId() {
-        return createId;
-    }
-
-    public void setCreateId(Long createId) {
-        this.createId = createId;
-    }
-
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Long getUpdateId() {
-        return updateId;
-    }
-
-    public void setUpdateId(Long updateId) {
-        this.updateId = updateId;
-    }
-
-    public DataEntity() {
-        super();
-        this.delFlag = false;
-    }
-
-    public DataEntity(Long id) {
-        super(id);
-    }
-
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public Boolean getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Boolean delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public User getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(User createUser) {
-        this.createUser = createUser;
-    }
-
-    public User getUpdateUser() {
-        return updateUser;
-    }
-
-    public void setUpdateUser(User updateUser) {
-        this.updateUser = updateUser;
-    }
+	
+	
+	public DataEntity() {
+	}
+	
+	public DataEntity(Long id) {
+		super(id);
+	}
 }

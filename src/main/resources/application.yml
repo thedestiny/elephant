@@ -3,7 +3,6 @@ server:
     tomcat:
       uri-encoding: UTF-8
 
-
 debug: false
 spring:
   #激活哪一个环境的配置文件
