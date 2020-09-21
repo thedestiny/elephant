@@ -1,5 +1,10 @@
 package com.destiny.elephant.controller.system;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import com.destiny.elephant.annotation.ElephantLog;
 import com.destiny.elephant.entity.Site;
 import com.destiny.elephant.service.UploadService;
@@ -10,6 +15,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.xiaoleilu.hutool.log.Log;
 import com.xiaoleilu.hutool.log.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,15 +41,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by tnt on 2017/12/7.
- * ${TODO}
+ 文件上传
  */
+@Slf4j
 @Controller
 @RequestMapping("file")
 public class FileController {
-
-    //推荐创建不可变静态类成员变量
-    private static final Log log = LogFactory.get();
+	
 
     @Value("uploadType")
     private String uploadType;
@@ -72,13 +76,11 @@ public class FileController {
     @ElephantLog("文件上传")
     public RestResponse uploadFile(@RequestParam("test") MultipartFile file, HttpServletRequest httpServletRequest) {
         Site site = (Site) httpServletRequest.getAttribute("site");
-        if (site == null) {
-            return RestResponse.failure("加载信息错误");
+        
+        if(ObjectUtil.isEmpty(site) || ObjectUtil.isEmpty(file)){
+	        return RestResponse.failure("加载信息错误或者上传文件为空,请检查!");
         }
-
-        if (file == null) {
-            return RestResponse.failure("上传文件为空 ");
-        }
+        
         String url = null;
         Map m = Maps.newHashMap();
         try {
@@ -105,12 +107,11 @@ public class FileController {
     @ElephantLog("base64格式文件上传")
     public RestResponse uploadBase64(@RequestParam(value = "file", required = false) String file,
                                      @RequestParam(value = "name", required = false) String name) {
-        if (StringUtils.isBlank(file)) {
-            return RestResponse.failure("图片不能为空");
+    	
+        if(StrUtil.isBlank(file) || StrUtil.isBlank(name)){
+	        return RestResponse.failure("图片或图片名称不能为空!");
         }
-        if (StringUtils.isBlank(name)) {
-            return RestResponse.failure("图片名称不能为空");
-        }
+        
         String url = QiNiuFileUtil.uploadBase64(file, name);
         return RestResponse.success().setData(url);
     }
@@ -127,12 +128,11 @@ public class FileController {
     @ElephantLog("富文本编辑器文件上传")
     public Map<String, Object> uploadWang(@RequestParam("test") MultipartFile[] file, HttpServletRequest httpServletRequest) {
         Site site = (Site) httpServletRequest.getAttribute("site");
-        if (site == null) {
-            return RestResponse.failure("加载信息错误");
-        }
-        if (file == null || file.length == 0) {
-            return RestResponse.failure("上传文件为空 ");
-        }
+      
+	    if(ObjectUtil.isEmpty(site) || ObjectUtil.isEmpty(file)){
+		    return RestResponse.failure("加载信息错误或者上传文件为空,请检查!");
+	    }
+        
         List<String> data = Lists.newArrayList();
         Map<String, Object> m = Maps.newHashMap();
         try {
@@ -169,12 +169,11 @@ public class FileController {
     public RestResponse doContent(@RequestParam(value = "content", required = false) String content,
                                   HttpServletRequest httpServletRequest) throws IOException, NoSuchAlgorithmException {
         Site site = (Site) httpServletRequest.getAttribute("site");
-        if (site == null) {
-            return RestResponse.failure("加载信息错误");
-        }
-        if (StringUtils.isBlank(content)) {
-            return RestResponse.failure("复制内容为空");
-        }
+       
+	    if(ObjectUtil.isEmpty(site) || StrUtil.isEmpty(content)){
+		    return RestResponse.failure("加载信息错误或复制内容为空为空,请检查!");
+	    }
+        
         Document doc = Jsoup.parseBodyFragment(content);
         Elements links = doc.select("img[src]");
         for (Element e : links) {
@@ -212,12 +211,9 @@ public class FileController {
     @ResponseBody
     public RestResponse downCheck(@RequestParam(value = "url", required = false) String url,
                                   @RequestParam(value = "name", required = false) String name) {
-        if (StringUtils.isBlank(url)) {
-            return RestResponse.failure("图片地址不能为空");
-        }
-        if (StringUtils.isBlank(name)) {
-            return RestResponse.failure("图片名称不能为空");
-        }
+	    if(StrUtil.isBlank(url) || StrUtil.isBlank(name)){
+		    return RestResponse.failure("图片或图片名称不能为空!");
+	    }
         return RestResponse.success();
     }
 
@@ -227,31 +223,39 @@ public class FileController {
     public RestResponse downFile(@RequestParam(value = "url", required = false) String realurl,
                                  @RequestParam(value = "name", required = false) String name,
                                  HttpServletResponse response) throws IOException {
-        if (StringUtils.isBlank(realurl)) {
-            return RestResponse.failure("图片地址不能为空");
-        }
-        if (StringUtils.isBlank(name)) {
-            return RestResponse.failure("图片名称不能为空");
-        }
+    	
+	    if(StrUtil.isBlank(realurl) || StrUtil.isBlank(name)){
+		    return RestResponse.failure("图片地址或图片名称不能为空!");
+	    }
+        
         if ("text/html".equals(ToolUtil.getContentType(name))) {
             return RestResponse.failure("图片格式不正确");
         }
-        name = new String(name.getBytes("GB2312"), "ISO8859-1");
-        URL url = new URL(realurl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.connect();
-        BufferedInputStream br = new BufferedInputStream(conn.getInputStream());
-        byte[] buf = new byte[1024];
-        int len = 0;
+	
+	    HttpResponse httpResponse = HttpUtil.createGet(realurl).execute();
+	    byte[] body = httpResponse.bodyBytes();
+	
+	    name = new String(name.getBytes("GB2312"), "ISO8859-1");
+	    
+        // URL url = new URL(realurl);
+        // HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // conn.connect();
+        // BufferedInputStream br = new BufferedInputStream(conn.getInputStream());
+        // byte[] buf = new byte[1024];
+        // int len = 0;
         response.reset();
         response.setHeader("Content-type", "application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=" + name);
         ServletOutputStream out = response.getOutputStream();
-        while ((len = br.read(buf)) > 0) out.write(buf, 0, len);
-        br.close();
+        out.write(body);
         out.flush();
         out.close();
-        conn.disconnect();
+        // out.
+        // while ((len = br.read(buf)) > 0) out.write(buf, 0, len);
+        // br.close();
+        // out.flush();
+        // out.close();
+        // conn.disconnect();
         return RestResponse.success();
     }
 
