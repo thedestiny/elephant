@@ -234,15 +234,7 @@ public class FileController {
 	
 	    HttpResponse httpResponse = HttpUtil.createGet(realurl).execute();
 	    byte[] body = httpResponse.bodyBytes();
-	
 	    name = new String(name.getBytes("GB2312"), "ISO8859-1");
-	    
-        // URL url = new URL(realurl);
-        // HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        // conn.connect();
-        // BufferedInputStream br = new BufferedInputStream(conn.getInputStream());
-        // byte[] buf = new byte[1024];
-        // int len = 0;
         response.reset();
         response.setHeader("Content-type", "application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=" + name);
@@ -250,12 +242,7 @@ public class FileController {
         out.write(body);
         out.flush();
         out.close();
-        // out.
-        // while ((len = br.read(buf)) > 0) out.write(buf, 0, len);
-        // br.close();
-        // out.flush();
-        // out.close();
-        // conn.disconnect();
+    
         return RestResponse.success();
     }
 
