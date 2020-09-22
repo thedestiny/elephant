@@ -27,8 +27,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Created by wangl on 2018/1/13.
- * todo:
+ 系统日志实现
  */
 @Aspect
 @Order(5)
