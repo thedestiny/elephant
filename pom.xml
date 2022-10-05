@@ -29,7 +29,7 @@
         <fileupload.version>1.4</fileupload.version>
         <mybatisplus.version>3.4.0</mybatisplus.version>
         <fastjson.version>1.2.73</fastjson.version>
-        <jackson.version>2.11.2</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
         <druid.version>1.1.23</druid.version>
         <guava.version>29.0-jre</guava.version>
         <quartz.version>2.3.2</quartz.version>
