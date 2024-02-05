@@ -46,13 +46,6 @@ public class OssUploadServiceImpl implements UploadService {
         return uploadInfoService.getOneInfo();
     }
 
-    /*  oss-cn-beijing.aliyuncs.com
-        qingtengjia.oss-cn-beijing.aliyuncs.com
-    *  C97JOyyDvdE3dF9hNgDWF9CX3DLWiU
-    *  accId LTAILtNPBCgi0Lwx
-       key C97JOyyDvdE3dF9hNgDWF9CX3DLWiU
-    *
-    * */
 
     private OSSClient getOSSClient() {
         return new OSSClient(getUploadInfo().getOssEndpoint(), getUploadInfo().getOssKeyId(), getUploadInfo().getOssKeySecret());
